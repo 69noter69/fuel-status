@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>สถานะน้ำมันเครื่องปั่นไฟ สปท.7</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: title column left, two station cards side by side with maintenance under them, the depot as its own tall column on the right, history full width below. */
+:root{
+  --bg:#ffffff; --ink:#0f1f1e; --muted:#566866; --line:#e2eae9; --panel:#f4f8f7;
+  --station:#0d9488; --station-ink:#f0fdfa; --station-dim:#ccfbf1; --station-line:rgba(204,251,241,.35);
+  --depot:#475569; --depot-ink:#f8fafc; --depot-dim:#cbd5e1; --depot-line:rgba(203,213,225,.3);
+  --maint:#ea580c; --maint-ink:#fff7ed; --maint-dim:#ffedd5; --maint-line:rgba(255,237,213,.35); --maint-soft:#fed7aa;
+  --chip-out-bg:#fff1e6; --chip-out:#b4430a; --chip-buy-bg:#e2e8f0; --chip-buy:#334155; --chip-move-bg:#ccfbf1; --chip-move:#0f766e; --chip-open-bg:#eef2f1; --chip-open:#566866;
+  --font:'IBM Plex Sans Thai','Sukhumvit Set','Noto Sans Thai','Leelawadee UI',Tahoma,sans-serif;
+  --r-card:20px; --r-in:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a1413; --ink:#e4efed; --muted:#93a8a5; --line:#1d2c2b; --panel:#101d1c;
+  --chip-out-bg:rgba(234,88,12,.18); --chip-out:#fdba74; --chip-buy-bg:rgba(148,163,184,.18); --chip-buy:#cbd5e1; --chip-move-bg:rgba(13,148,136,.22); --chip-move:#5eead4; --chip-open-bg:#1a2928; --chip-open:#93a8a5;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a1413; --ink:#e4efed; --muted:#93a8a5; --line:#1d2c2b; --panel:#101d1c;
+  --chip-out-bg:rgba(234,88,12,.18); --chip-out:#fdba74; --chip-buy-bg:rgba(148,163,184,.18); --chip-buy:#cbd5e1; --chip-move-bg:rgba(13,148,136,.22); --chip-move:#5eead4; --chip-open-bg:#1a2928; --chip-open:#93a8a5;
+  color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1360px;margin-inline:auto;padding-block:clamp(20px,4vw,48px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));container-type:inline-size}
+.num{font-variant-numeric:tabular-nums}
+
+.board{display:grid;gap:14px;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) minmax(0,1fr) minmax(0,.95fr);
+  grid-template-areas:"intro kyd kww depot" "intro maint maint depot" "log log log log"}
+.intro{grid-area:intro;display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:6px 12px 4px 0}
+.c-kyd{grid-area:kyd}.c-kww{grid-area:kww}.c-depot{grid-area:depot}.c-maint{grid-area:maint}.c-log{grid-area:log}
+
+h1{font-size:clamp(34px,3.6cqi,52px);line-height:1.15;font-weight:700;letter-spacing:-.015em;margin:0;text-wrap:balance}
+.total{margin-top:22px;display:flex;flex-direction:column;gap:2px}
+.total>span{font-size:14px;color:var(--muted)}
+.total b{font-size:clamp(26px,2.4cqi,34px);font-weight:600;line-height:1.2}
+.total b small{font-size:15px;font-weight:500;color:var(--muted);margin-left:4px}
+.lede{font-size:13.5px;color:var(--muted);margin:0;max-width:34ch;line-height:1.75}
+.sign{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-top:1px solid var(--line);padding-top:12px;margin-top:16px;font-size:13px}
+.sign strong{font-weight:700;letter-spacing:.04em}
+.sign span{color:var(--muted)}
+
+.card{position:relative;overflow:hidden;border-radius:var(--r-card);padding:clamp(18px,1.7cqi,24px);display:flex;flex-direction:column;gap:12px;min-width:0}
+.card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.eyebrow{font-size:13px;font-weight:500;letter-spacing:.01em}
+.chip{font-size:12px;border-radius:999px;padding:2px 10px;white-space:nowrap}
+.name{font-size:20px;font-weight:600;line-height:1.3;margin:-6px 0 0}
+.deco{position:absolute;right:-26px;bottom:-26px;width:132px;height:132px;opacity:.16;pointer-events:none}
+.deco *{fill:none;stroke:currentColor;stroke-width:2}
+
+.station{background:var(--station);color:var(--station-ink)}
+.station .eyebrow,.station .muted{color:var(--station-dim)}
+.station .chip{border:1px solid var(--station-line);color:var(--station-dim)}
+.metrics{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.m{display:flex;flex-direction:column;gap:2px;min-width:0}
+.m .lab{font-size:12.5px;color:var(--station-dim)}
+.m .val{font-size:clamp(40px,3.8cqi,52px);font-weight:700;line-height:1.05;letter-spacing:-.02em}
+.m .val small{font-size:15px;font-weight:500;margin-left:4px;letter-spacing:0}
+.m.hours{background:var(--station-ink);color:var(--station);border-radius:var(--r-in);padding:10px 14px;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.m.hours .lab{color:var(--station);font-weight:600;font-size:15px}
+.m.hours .val small{color:var(--station)}
+.bar{display:flex;height:10px;border-radius:999px;overflow:hidden;background:var(--station-line)}
+.bar i{display:block;height:100%}
+.bar .in{background:var(--station-ink)}
+.bar .res{background:var(--station-dim);opacity:.55}
+.legend{display:flex;justify-content:space-between;gap:12px;font-size:13px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--station-dim)}
+.legend b{color:var(--station-ink);font-weight:600}
+.legend i{width:9px;height:9px;border-radius:3px;background:var(--station-ink);display:inline-block}
+.legend .r i{background:var(--station-dim);opacity:.55}
+.foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--station-line);font-size:12.5px;color:var(--station-dim)}
+
+.depot{background:var(--depot);color:var(--depot-ink)}
+.depot .eyebrow,.depot .muted{color:var(--depot-dim)}
+.depot .chip{border:1px solid var(--depot-line);color:var(--depot-dim)}
+.depot .val{font-size:clamp(44px,4.4cqi,60px);font-weight:700;line-height:1;letter-spacing:-.025em;margin-top:6px}
+.depot .val small{font-size:16px;font-weight:500;margin-left:4px;letter-spacing:0}
+.depot .detail{font-size:14px;line-height:1.7;margin:0}
+.dillus svg{width:clamp(120px,11cqi,150px);height:auto;display:block;margin-top:4px}
+.dillus .disc{fill:var(--depot-line)}
+.dillus .line *{fill:none;stroke:var(--depot-ink);stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.dillus .drum rect{fill:var(--depot)}
+.dillus .drop{fill:var(--depot-ink)}
+.flow{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--depot-line);font-size:13px}
+.flow .to{display:flex;align-items:center;gap:8px;font-weight:500}
+.flow .to svg{width:18px;height:18px;flex:none}
+.flow .to svg *{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.maint{background:var(--maint);color:var(--maint-ink)}
+.maint .eyebrow,.maint .muted{color:var(--maint-dim)}
+.mgrid{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,15rem);gap:18px 22px;align-items:center}
+.illus svg{width:clamp(88px,8cqi,112px);height:auto;display:block}
+.illus .disc{fill:var(--maint-line)}
+.illus .gear *{fill:none;stroke:var(--maint-ink);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.illus .wrench path{fill:var(--maint);stroke:var(--maint-ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.minfo{display:flex;flex-direction:column;gap:4px;min-width:0}
+.budget{background:var(--maint-ink);color:var(--maint);border-radius:var(--r-in);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.budget .blab{font-size:13px;font-weight:600}
+.budget .bval{font-size:clamp(28px,2.6cqi,34px);font-weight:700;line-height:1.15;letter-spacing:-.015em}
+.budget .bval small{font-size:14px;font-weight:500;margin-left:4px;letter-spacing:0}
+.budget .bsrc{font-size:12.5px}
+.bbar{height:8px;border-radius:999px;background:var(--maint-soft);margin-top:8px;overflow:hidden}
+.bbar i{display:block;height:100%;width:0;background:var(--maint)}
+.bsplit{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;margin-top:4px;flex-wrap:wrap}
+.bsplit b{font-weight:700}
+.maint .row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+.maint .who{font-size:clamp(28px,2.8cqi,36px);font-weight:700;line-height:1.1}
+.maint .period{font-size:13px;color:var(--maint-dim)}
+.maint .next{font-size:13px;color:var(--maint-dim)}
+.maint .next b{color:var(--maint-ink);font-weight:600;white-space:nowrap}
+.maint .empty{font-size:13px;color:var(--maint-dim);border:1px dashed var(--maint-line);border-radius:var(--r-in);padding:10px 12px;margin:0}
+.mlist{list-style:none;margin:0;padding:0;display:grid}
+.mlist li{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:12px;padding:8px 0;border-top:1px solid var(--maint-line);font-size:13.5px}
+
+.c-log{background:var(--panel);border:1px solid var(--line);margin-top:10px}
+.c-log h2{font-size:18px;font-weight:600;margin:0}
+.c-log .note{font-size:13px;color:var(--muted);margin:-6px 0 0}
+.scroll{overflow:auto;max-height:28rem;border-radius:var(--r-in)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-weight:500;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0;background:var(--panel)}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.r,th.r{text-align:right;white-space:nowrap}
+td.d{white-space:nowrap}
+.k{display:inline-block;padding:1px 10px;border-radius:999px;font-weight:500;white-space:nowrap;font-size:12.5px}
+.k-open{background:var(--chip-open-bg);color:var(--chip-open)}
+.k-out{background:var(--chip-out-bg);color:var(--chip-out)}
+.k-buy{background:var(--chip-buy-bg);color:var(--chip-buy)}
+.k-move{background:var(--chip-move-bg);color:var(--chip-move)}
+.err{color:var(--muted);font-size:14px}
+
+@container (max-width:1120px){
+  .board{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,.95fr);grid-template-areas:"intro intro intro" "kyd kww depot" "maint maint depot" "log log log"}
+  .intro{flex-direction:row;flex-wrap:wrap;align-items:flex-end;padding:0 0 8px}
+  .intro>div:first-child{flex:1 1 320px}
+  .intro>div:last-child{flex:1 1 280px}
+  .lede{max-width:none}
+}
+@container (max-width:760px){
+  .board{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "kyd" "kww" "depot" "maint" "log"}
+  .intro{flex-direction:column;align-items:stretch}
+  h1{font-size:34px}
+  .m .val{font-size:42px}
+  .c-log .c-detail{display:none}
+  .mgrid{grid-template-columns:auto minmax(0,1fr)}
+  .budget{grid-column:1 / -1}
+}
+@media (prefers-reduced-motion:no-preference){
+  .card{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+  .c-kww{animation-delay:.05s}.c-depot{animation-delay:.1s}.c-maint{animation-delay:.15s}.c-log{animation-delay:.2s}
+  @keyframes rise{from{transform:translateY(8px)}to{transform:none}}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="board">
+    <aside class="intro">
+      <div>
+        <h1>สถานะน้ำมัน<br>เครื่องปั่นไฟ</h1>
+        <div class="total"><span>น้ำมันรวมทุกแห่ง</span><b class="num"><span data-k="grand">—</span><small>ลิตร</small></b></div>
+      </div>
+      <div>
+        <p class="lede">ยอดน้ำมันคงเหลือของสถานีเครื่องส่งเขายายดา เขาวงเวียน และคลังน้ำมันศูนย์ฯ จันทบุรี ปีงบประมาณ 2570 ยอดของสถานีคือน้ำมันในถังเครื่องรวมกับสำรองนอกถัง ตามรายงานล่าสุดของเจ้าหน้าที่ประจำสถานี</p>
+        <div class="sign"><strong>สปท.7</strong><span>สำนักงานประชาสัมพันธ์ที่ 7</span></div>
+      </div>
+    </aside>
+
+    <article class="card station c-kyd" data-site="kyd">
+      <svg class="deco" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52"/><circle cx="60" cy="60" r="34"/><path d="M60 38c9 12 14 20 14 27a14 14 0 0 1-28 0c0-7 5-15 14-27z"/></svg>
+      <div class="top"><span class="eyebrow">สถานีเครื่องส่ง · ระยอง</span><span class="chip">อัปเดต <span data-f="as_of">—</span></span></div>
+      <h2 class="name">เขายายดา</h2>
+      <div class="metrics">
+        <div class="m"><span class="lab">น้ำมันคงเหลือ</span><span class="val num"><span data-f="total">—</span><small>ลิตร</small></span></div>
+        <div class="m hours"><span class="lab">เดินเครื่องได้อีก</span><span class="val num">~<span data-f="hours">—</span><small>ชม.</small></span></div>
+      </div>
+      <div class="bar" aria-hidden="true"><i class="in"></i><i class="res"></i></div>
+      <div class="legend num"><span><i></i>ในถังเครื่อง <b data-f="in_tank">—</b> ล.</span><span class="r"><i></i>สำรองนอกถัง <b data-f="reserve">—</b> ล.</span></div>
+      <p class="foot">ชั่วโมงคิดจากยอดรวม ÷ อัตรากินน้ำมัน <span data-f="rate">—</span> ลิตร/ชม. ถ้าไฟดับต่อเนื่อง</p>
+    </article>
+
+    <article class="card station c-kww" data-site="kww">
+      <svg class="deco" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52"/><circle cx="60" cy="60" r="34"/><path d="M60 38c9 12 14 20 14 27a14 14 0 0 1-28 0c0-7 5-15 14-27z"/></svg>
+      <div class="top"><span class="eyebrow">สถานีเครื่องส่ง · ตราด</span><span class="chip">อัปเดต <span data-f="as_of">—</span></span></div>
+      <h2 class="name">เขาวงเวียน</h2>
+      <div class="metrics">
+        <div class="m"><span class="lab">น้ำมันคงเหลือ</span><span class="val num"><span data-f="total">—</span><small>ลิตร</small></span></div>
+        <div class="m hours"><span class="lab">เดินเครื่องได้อีก</span><span class="val num">~<span data-f="hours">—</span><small>ชม.</small></span></div>
+      </div>
+      <div class="bar" aria-hidden="true"><i class="in"></i><i class="res"></i></div>
+      <div class="legend num"><span><i></i>ในถังเครื่อง <b data-f="in_tank">—</b> ล.</span><span class="r"><i></i>สำรองนอกถัง <b data-f="reserve">—</b> ล.</span></div>
+      <p class="foot">ชั่วโมงคิดจากยอดรวม ÷ อัตรากินน้ำมัน <span data-f="rate">—</span> ลิตร/ชม. ถ้าไฟดับต่อเนื่อง</p>
+    </article>
+
+    <article class="card depot c-depot" data-site="cti">
+            <div class="top"><span class="eyebrow">คลังน้ำมัน · จันทบุรี</span><span class="chip">อัปเดต <span data-f="as_of">—</span></span></div>
+      <h2 class="name">ศูนย์ฯ จันทบุรี</h2>
+      <div class="val num"><span data-f="total">—</span><small>ลิตร</small></div>
+      <p class="detail" data-f="detail">—</p>
+      <div class="dillus" aria-hidden="true">
+        <svg viewBox="0 0 120 120">
+          <circle class="disc" cx="60" cy="60" r="58"/>
+          <g class="line">
+            <path d="M20 25c-11 3-13 19-5 28"/>
+            <path d="M20 18h33q8 0 8 8v4h-41z"/>
+            <path d="M27 30q0 16 18 16h8v-16"/>
+            <path d="M35 30q2 9 10 10"/>
+            <path d="M61 25h14l10 12"/>
+          </g>
+          <path class="drop" d="M86 42c3 4 4.5 6.5 4.5 8.5a4.5 4.5 0 0 1-9 0c0-2 1.5-4.5 4.5-8.5z"/>
+          <g class="line drum">
+            <rect x="56" y="62" width="48" height="42" rx="7"/>
+            <path d="M56 76h48M56 90h48"/>
+            <path d="M80 62v-4h10v4"/>
+          </g>
+        </svg>
+      </div>
+      <div class="flow">
+        <span class="muted">ซื้อเข้าคลัง</span>
+        <span class="to"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>สถานีเขายายดา · ระยอง</span>
+        <span class="to"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>สถานีเขาวงเวียน · ตราด</span>
+      </div>
+    </article>
+
+    <article class="card maint c-maint">
+      <div class="top"><span class="eyebrow">ซ่อมบำรุงเครื่องปั่นไฟ · สลับปีละสถานี</span></div>
+      <div class="mgrid">
+        <div class="illus" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <circle class="disc" cx="60" cy="60" r="58"/>
+            <g class="gear" transform="translate(38 10) scale(3.1)"><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><circle cx="12" cy="12" r="3"/></g>
+            <g class="wrench" transform="translate(8 40) scale(3.2)"><path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5"/></g>
+          </svg>
+        </div>
+        <div class="minfo">
+          <div class="period">รอบปีงบประมาณ <span data-m="fy">—</span> (<span data-m="period">—</span>)</div>
+          <div class="who" data-m="station">—</div>
+          <div class="next">ปีงบประมาณ <span data-m="next_fy">—</span> ถึงรอบ <b data-m="next_station">—</b></div>
+        </div>
+        <div class="budget">
+          <div class="blab">งบประมาณซ่อมบำรุง</div>
+          <div class="bval num"><span data-m="budget">—</span><small>บาท</small></div>
+          <div class="bsrc">จาก <span data-m="budget_source">—</span></div>
+          <div class="bbar" aria-hidden="true"><i></i></div>
+          <div class="bsplit num"><span>ใช้ไป <b data-m="used">—</b></span><span>คงเหลือ <b data-m="left">—</b></span></div>
+        </div>
+      </div>
+      <ul class="mlist" hidden></ul>
+      <p class="empty" hidden>ยังไม่มีรายการซ่อมบำรุงในรอบนี้</p>
+    </article>
+
+    <section class="card c-log">
+      <h2>ประวัติรายการน้ำมัน</h2>
+      <p class="note">ตั้งแต่ 1 ต.ค. 69 ล่าสุดอยู่บนสุด ยอดคงเหลือคือยอดของสถานที่นั้นหลังรายการ</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>วันที่</th><th>สถานที่</th><th>รายการ</th><th class="c-detail">รายละเอียด</th><th class="r">ใช้ / รับ (ลิตร)</th><th class="r">คงเหลือ (ลิตร)</th><th class="r c-detail">ราคา (บาท)</th></tr></thead>
+          <tbody id="log-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  const TH_M = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const blank = (v) => v === null || v === undefined || v === '';
+  const fmt = (v, d = 2) => blank(v) ? '—' : Number(v).toLocaleString('en-US', {maximumFractionDigits: d});
+  const signed = (v) => blank(v) ? '—' : (Number(v) > 0 ? '+' : Number(v) < 0 ? '−' : '') + fmt(Math.abs(Number(v)));
+  const thDate = (s) => {
+    const [y, m, d] = String(s || '').slice(0, 10).split('-').map(Number);
+    return y && m && d ? `${d} ${TH_M[m - 1]} ${String(y + 543).slice(-2)}` : '—';
+  };
+  const kindClass = (k) => k === 'ยอดตั้งต้น' ? 'k-open' : k === 'ไฟดับ' ? 'k-out' : k === 'ซื้อ' ? 'k-buy' : 'k-move';
+
+  function render(data) {
+    const log = Array.isArray(data.log) ? data.log : [];
+    const sites = Array.isArray(data.sites) ? data.sites : [];
+    let grand = 0;
+    sites.forEach((s) => {
+      const r = log.filter((x) => x.site_id === s.site_id).sort((a, b) => b.seq - a.seq)[0] || {};
+      const total = blank(r.total) ? null : Number(r.total);
+      if (total !== null) grand += total;
+      const hours = total !== null && s.burn_rate_lph ? Math.round(total / Number(s.burn_rate_lph)) : null;
+      const vals = {as_of: thDate(r.as_of), total: fmt(total), hours: blank(hours) ? '—' : fmt(hours, 0), in_tank: fmt(r.in_tank), reserve: fmt(r.reserve), rate: fmt(s.burn_rate_lph), detail: blank(r.detail) ? '—' : String(r.detail)};
+      document.querySelectorAll(`[data-site="${s.site_id}"]`).forEach((card) => {
+        card.querySelectorAll('[data-f]').forEach((el) => { el.textContent = vals[el.dataset.f] ?? '—'; });
+        const bin = card.querySelector('.bar .in'), bres = card.querySelector('.bar .res');
+        if (bin && bres && total) {
+          bin.style.width = `${100 * (Number(r.in_tank) || 0) / total}%`;
+          bres.style.width = `${100 * (Number(r.reserve) || 0) / total}%`;
+        }
+      });
+    });
+    document.querySelectorAll('[data-k="grand"]').forEach((el) => { el.textContent = fmt(Math.round(grand * 100) / 100); });
+
+    const m = data.maintenance || {};
+    const cyc = Array.isArray(m.cycle) ? m.cycle : [];
+    const cur = cyc.find((c) => c.current) || {};
+    const nxt = cyc.find((c) => !c.current) || {};
+    const allItems = Array.isArray(m.items) ? m.items : [];
+    const used = allItems.filter((it) => String(it.fy) === String(cur.fy)).reduce((t, it) => t + (Number(it.cost) || 0), 0);
+    const budget = blank(cur.budget) ? null : Number(cur.budget);
+    const mv = {fy: cur.fy, period: cur.period, station: cur.station, next_fy: nxt.fy, next_station: nxt.station,
+      budget: budget === null ? null : fmt(budget), budget_source: cur.budget_source, used: fmt(used), left: budget === null ? null : fmt(budget - used)};
+    document.querySelectorAll('.bbar i').forEach((el) => { el.style.width = budget ? `${Math.min(100, 100 * used / budget)}%` : '0'; });
+    document.querySelectorAll('[data-m]').forEach((el) => { const v = mv[el.dataset.m]; el.textContent = blank(v) ? '—' : String(v); });
+    const items = allItems.filter((it) => String(it.fy) === String(cur.fy)).sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    const ul = document.querySelector('.mlist'), empty = document.querySelector('.maint .empty');
+    ul.replaceChildren(...items.map((it) => {
+      const li = document.createElement('li');
+      [thDate(it.date), String(it.item ?? '—'), String(it.status ?? ''), blank(it.cost) ? '—' : `${fmt(it.cost)} บาท`].forEach((t) => { const s = document.createElement('span'); s.textContent = t; li.append(s); });
+      return li;
+    }));
+    ul.hidden = items.length === 0;
+    empty.hidden = items.length > 0;
+
+    const tb = document.getElementById('log-body');
+    tb.replaceChildren(...[...log].sort((a, b) => b.seq - a.seq).map((r) => {
+      const tr = document.createElement('tr');
+      const td = (t, c) => { const x = document.createElement('td'); if (c) x.className = c; x.textContent = t; tr.append(x); return x; };
+      td(thDate(r.date), 'd');
+      td(String(r.site_name ?? '—'));
+      const kc = td('');
+      const chip = document.createElement('span'); chip.className = `k ${kindClass(r.kind)}`; chip.textContent = String(r.kind ?? '—'); kc.append(chip);
+      td(blank(r.detail) ? '—' : String(r.detail), 'c-detail');
+      td(signed(r.liters), 'r num');
+      td(fmt(r.total), 'r num');
+      td(fmt(r.amount_baht), 'r num c-detail');
+      return tr;
+    }));
+  }
+
+  fetch('data.json', {cache: 'no-store'})
+    .then((res) => { if (!res.ok) throw new Error(res.status); return res.json(); })
+    .then(render)
+    .catch(() => {
+      const tb = document.getElementById('log-body');
+      const tr = document.createElement('tr'); const td = document.createElement('td');
+      td.colSpan = 7; td.className = 'err'; td.textContent = 'โหลดข้อมูลไม่สำเร็จ ลองรีเฟรชหน้าอีกครั้ง';
+      tr.append(td); tb.replaceChildren(tr);
+    });
+})();
+</script>
+
+</body>
+</html>

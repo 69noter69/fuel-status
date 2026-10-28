@@ -1,0 +1,132 @@
+{
+ "updated": "2026-10-28",
+ "sites": [
+  {
+   "site_id": "kyd",
+   "name": "เขายายดา",
+   "role": "สถานีเครื่องส่ง",
+   "province": "ระยอง",
+   "tank_capacity": null,
+   "burn_rate_lph": 10
+  },
+  {
+   "site_id": "kww",
+   "name": "เขาวงเวียน",
+   "role": "สถานีเครื่องส่ง",
+   "province": "ตราด",
+   "tank_capacity": 370,
+   "burn_rate_lph": 10
+  },
+  {
+   "site_id": "cti",
+   "name": "ศูนย์ฯ จันทบุรี",
+   "role": "คลังน้ำมัน",
+   "province": "จันทบุรี",
+   "tank_capacity": null,
+   "burn_rate_lph": null
+  }
+ ],
+ "log": [
+  {
+   "seq": 1,
+   "date": "2026-10-01",
+   "as_of": "2026-10-01",
+   "site_id": "cti",
+   "site_name": "ศูนย์ฯ จันทบุรี",
+   "kind": "ยอดตั้งต้น",
+   "detail": "ถังใหญ่ 1,200 ล. + ถังฟ้า 3 ถัง 90 ล.",
+   "liters": null,
+   "in_tank": null,
+   "reserve": 1290,
+   "total": 1290,
+   "price_per_liter": null,
+   "amount_baht": null,
+   "reported_by": "ตุ้ย"
+  },
+  {
+   "seq": 2,
+   "date": "2026-10-01",
+   "as_of": "2026-09-29",
+   "site_id": "kyd",
+   "site_name": "เขายายดา",
+   "kind": "ยอดตั้งต้น",
+   "detail": "ยอดจากรายงาน 29 ก.ย. 69 หลังรับน้ำมัน 480 ล.",
+   "liters": null,
+   "in_tank": 109.44,
+   "reserve": 480,
+   "total": 589.44,
+   "price_per_liter": null,
+   "amount_baht": null,
+   "reported_by": "พี่ต้น"
+  },
+  {
+   "seq": 3,
+   "date": "2026-10-01",
+   "as_of": "2026-09-28",
+   "site_id": "kww",
+   "site_name": "เขาวงเวียน",
+   "kind": "ยอดตั้งต้น",
+   "detail": "ยอดจากรายงาน 28 ก.ย. 69 ถังเครื่องเต็ม",
+   "liters": null,
+   "in_tank": 370,
+   "reserve": 300,
+   "total": 670,
+   "price_per_liter": null,
+   "amount_baht": null,
+   "reported_by": "ปอนด์"
+  },
+  {
+   "seq": 4,
+   "date": "2026-10-06",
+   "as_of": "2026-10-06",
+   "site_id": "kyd",
+   "site_name": "เขายายดา",
+   "kind": "ไฟดับ",
+   "detail": "19.42–00.02 น. (4 ชม. 20 นาที) ถ่ายจากนอกถังเข้าถัง 100 ล.",
+   "liters": -43.4,
+   "in_tank": 166.04,
+   "reserve": 380,
+   "total": 546.04,
+   "price_per_liter": null,
+   "amount_baht": null,
+   "reported_by": "พี่ต้น"
+  },
+  {
+   "seq": 5,
+   "date": "2026-10-23",
+   "as_of": "2026-10-23",
+   "site_id": "kyd",
+   "site_name": "เขายายดา",
+   "kind": "ไฟดับ",
+   "detail": "13.42–20.15 น. (6 ชม. 33 นาที)",
+   "liters": -65.61,
+   "in_tank": 100.43,
+   "reserve": 380,
+   "total": 480.43,
+   "price_per_liter": null,
+   "amount_baht": null,
+   "reported_by": "พี่ต้น"
+  }
+ ],
+ "maintenance": {
+  "cycle": [
+   {
+    "fy": "2570",
+    "period": "ต.ค. 69 – ก.ย. 70",
+    "station": "เขายายดา",
+    "current": true,
+    "budget": 25000,
+    "budget_source": "กวท."
+   },
+   {
+    "fy": "2571",
+    "period": "ต.ค. 70 – ก.ย. 71",
+    "station": "เขาวงเวียน",
+    "current": false,
+    "budget": null,
+    "budget_source": null
+   }
+  ],
+  "items": []
+ }
+}
