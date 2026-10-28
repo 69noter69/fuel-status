@@ -147,7 +147,8 @@ td.d{white-space:nowrap}
 }
 @container (max-width:760px){
   .board{grid-template-columns:minmax(0,1fr);grid-template-areas:"intro" "kyd" "kww" "depot" "maint" "log"}
-  .intro{flex-direction:column;align-items:stretch}
+  .intro{flex-direction:column;align-items:stretch;gap:20px}
+  .intro>div:first-child,.intro>div:last-child{flex:none}
   h1{font-size:34px}
   .m .val{font-size:42px}
   .c-log .c-detail{display:none}
