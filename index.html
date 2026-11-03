@@ -304,7 +304,7 @@ td.d{white-space:nowrap}
       const total = blank(r.total) ? null : Number(r.total);
       if (total !== null) grand += total;
       const hours = total !== null && s.burn_rate_lph ? Math.round(total / Number(s.burn_rate_lph)) : null;
-      const vals = {as_of: thDate(r.as_of), total: fmt(total), hours: blank(hours) ? '—' : fmt(hours, 0), in_tank: fmt(r.in_tank), reserve: fmt(r.reserve), rate: fmt(s.burn_rate_lph), detail: blank(r.detail) ? '—' : String(r.detail)};
+      const vals = {as_of: thDate(r.as_of), total: fmt(total), hours: blank(hours) ? '—' : fmt(hours, 0), in_tank: fmt(r.in_tank), reserve: fmt(r.reserve), rate: fmt(s.burn_rate_lph), detail: !blank(r.stock_note) ? String(r.stock_note) : blank(r.detail) ? '—' : String(r.detail)};
       document.querySelectorAll(`[data-site="${s.site_id}"]`).forEach((card) => {
         card.querySelectorAll('[data-f]').forEach((el) => { el.textContent = vals[el.dataset.f] ?? '—'; });
         const bin = card.querySelector('.bar .in'), bres = card.querySelector('.bar .res');

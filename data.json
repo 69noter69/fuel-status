@@ -121,7 +121,8 @@
    "total": 1200,
    "price_per_liter": null,
    "amount_baht": null,
-   "reported_by": "พี่ต้น (รายงาน 3 พ.ย. 69)"
+   "reported_by": "พี่ต้น (รายงาน 3 พ.ย. 69)",
+   "stock_note": "ถังใหญ่ 1,200 ล."
   },
   {
    "seq": 7,
