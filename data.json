@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-28",
+ "updated": "2026-11-03",
  "sites": [
   {
    "site_id": "kyd",
@@ -103,6 +103,38 @@
    "in_tank": 100.43,
    "reserve": 380,
    "total": 480.43,
+   "price_per_liter": null,
+   "amount_baht": null,
+   "reported_by": "พี่ต้น"
+  },
+  {
+   "seq": 6,
+   "date": "2026-11-02",
+   "as_of": "2026-11-02",
+   "site_id": "cti",
+   "site_name": "ศูนย์ฯ จันทบุรี",
+   "kind": "ส่งน้ำมัน",
+   "detail": "ส่งไปสถานีเขายายดา 90 ล.",
+   "liters": -90,
+   "in_tank": null,
+   "reserve": 1200,
+   "total": 1200,
+   "price_per_liter": null,
+   "amount_baht": null,
+   "reported_by": "พี่ต้น (รายงาน 3 พ.ย. 69)"
+  },
+  {
+   "seq": 7,
+   "date": "2026-11-02",
+   "as_of": "2026-11-03",
+   "site_id": "kyd",
+   "site_name": "เขายายดา",
+   "kind": "รับน้ำมัน",
+   "detail": "รับจากศูนย์ฯ จันทบุรี 90 ล. เข้าสำรองนอกถัง (รายงาน 3 พ.ย. 69)",
+   "liters": 90,
+   "in_tank": 100.43,
+   "reserve": 470,
+   "total": 570.43,
    "price_per_liter": null,
    "amount_baht": null,
    "reported_by": "พี่ต้น"
