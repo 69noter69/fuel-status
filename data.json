@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-03",
+ "updated": "2026-11-04",
  "sites": [
   {
    "site_id": "kyd",
@@ -136,6 +136,22 @@
    "in_tank": 100.43,
    "reserve": 470,
    "total": 570.43,
+   "price_per_liter": null,
+   "amount_baht": null,
+   "reported_by": "พี่ต้น"
+  },
+  {
+   "seq": 8,
+   "date": "2026-11-04",
+   "as_of": "2026-11-04",
+   "site_id": "kyd",
+   "site_name": "เขายายดา",
+   "kind": "ไฟดับ",
+   "detail": "16.24–17.07 น. (43 นาที) · ชั่วโมงเครื่องสะสม 2,560 ชม. 1 นาที",
+   "liters": -7.31,
+   "in_tank": 93.12,
+   "reserve": 470,
+   "total": 563.12,
    "price_per_liter": null,
    "amount_baht": null,
    "reported_by": "พี่ต้น"
